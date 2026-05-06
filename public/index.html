@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaid Shawish</title>
+<meta name="description" content="Personal portfolio of Zaid Shawish">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b14;--bg2:#0d1526;--bg3:#111f35;--bg4:#162540;--c1:#00e5ff;--c2:#7c3aed;--c3:#10b981;--text:#dde6f0;--text2:#7a93b0;--text3:#3d5a78;--border:#1a2e47;--card:#0d1a2e}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;background:rgba(6,11,20,0.95);border-bottom:1px solid rgba(0,229,255,0.12);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;backdrop-filter:blur(12px)}
+.logo{font-family:monospace;font-size:16px;font-weight:700;color:var(--c1);letter-spacing:3px;cursor:pointer}
+.logo em{color:var(--text3);font-style:normal}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-links button{background:none;border:none;color:var(--text2);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:4px;cursor:pointer;transition:all 0.2s}
+.nav-links button:hover,.nav-links button.active{color:var(--c1);background:rgba(0,229,255,0.08)}
+.admin-btn{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);color:#a78bfa;font-size:11px;letter-spacing:1px;padding:5px 14px;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.2s;text-decoration:none}
+.admin-btn:hover{background:rgba(124,58,237,0.25)}
+.wrapper{position:relative;z-index:1;padding-top:56px;min-height:100vh}
+.page{display:none;max-width:960px;margin:0 auto;padding:2.5rem 1.5rem}
+.page.active{display:block}
+.sh{margin-bottom:2rem}.sh-tag{font-family:monospace;font-size:11px;color:var(--c1);letter-spacing:3px;opacity:0.7;margin-bottom:6px}.sh-title{font-size:26px;font-weight:700}.sh-line{width:36px;height:2px;background:var(--c1);border-radius:1px;margin-top:8px;opacity:0.6}
+/* HERO */
+.hero{padding:4rem 0 2rem;text-align:center}
+.hero-eye{width:80px;height:80px;border-radius:50%;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:32px}
+.hero-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);color:var(--c1);padding:4px 14px 4px 10px;border-radius:20px;font-size:11px;letter-spacing:2px;margin-bottom:1.5rem}
+.hero-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:800;line-height:1.15;letter-spacing:-1px;margin-bottom:1rem}
+.hero h1 .cx{color:var(--c1)}
+.hero-sub{color:var(--text2);font-size:15px;max-width:540px;margin:0 auto 2rem;line-height:1.8}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.btn-cta{background:var(--c1);color:#060b14;padding:10px 24px;border-radius:7px;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:1px;transition:opacity 0.2s}
+.btn-cta:hover{opacity:0.82}
+.btn-ghost{background:transparent;color:var(--c1);padding:10px 24px;border-radius:7px;border:1px solid rgba(0,229,255,0.3);cursor:pointer;font-size:13px;letter-spacing:1px;transition:all 0.2s}
+.btn-ghost:hover{background:rgba(0,229,255,0.08)}
+.kpi-row{display:flex;gap:1px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.kpi{flex:1;padding:1.2rem 1rem;text-align:center;background:var(--card)}
+.kpi:not(:last-child){border-right:1px solid var(--border)}
+.kpi-num{font-family:monospace;font-size:1.7rem;font-weight:700;color:var(--c1)}
+.kpi-lbl{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:3px}
+/* CARDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem}
+.card h3{font-size:11px;letter-spacing:2px;color:var(--c1);opacity:0.7;margin-bottom:1rem;font-weight:600}
+.card p{color:var(--text2);font-size:14px;line-height:1.8}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tc{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.18);color:var(--c1);padding:4px 10px;border-radius:4px;font-size:12px;font-family:monospace}
+/* TIMELINE */
+.tl-item{display:flex;gap:1rem;margin-bottom:1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--c1);flex-shrink:0;margin-top:4px;opacity:0.7}
+.tl-year{font-family:monospace;font-size:12px;color:var(--c1);min-width:60px;flex-shrink:0;margin-top:2px}
+.tl-text{font-size:14px;color:var(--text2);line-height:1.6}
+.tl-text strong{color:var(--text)}
+/* SKILL */
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.sk{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem}
+.sk-name{font-size:14px;margin-bottom:8px;font-weight:500}
+.sk-bar{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.sk-fill{height:100%;background:linear-gradient(90deg,var(--c2),var(--c1));border-radius:2px}
+.sk-pct{font-size:11px;color:var(--text3);margin-top:4px;font-family:monospace}
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.2rem}
+.pj{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem;transition:border-color 0.25s,transform 0.25s;position:relative;overflow:hidden;cursor:pointer}
+.pj::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c2),var(--c1));opacity:0;transition:opacity 0.25s}
+.pj:hover{border-color:rgba(0,229,255,0.35);transform:translateY(-2px)}
+.pj:hover::before{opacity:1}
+.pj-ico{font-size:26px;margin-bottom:12px}
+.pj-name{font-size:15px;font-weight:600;margin-bottom:6px}
+.pj-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.pj-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.pj-tag{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.22);color:#a78bfa;padding:2px 8px;border-radius:3px;font-size:11px;font-family:monospace}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px}
+.b-active{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.22)}
+.b-dev{background:rgba(245,158,11,0.1);color:#fbbf24;border:1px solid rgba(245,158,11,0.22)}
+.b-done{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.22)}
+/* BLOG */
+.blog-grid{display:grid;gap:1.2rem}
+.blog-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem;cursor:pointer;transition:border-color 0.2s}
+.blog-card:hover{border-color:rgba(0,229,255,0.3)}
+.bc-meta{font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px}
+.bc-title{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.bc-excerpt{font-size:13px;color:var(--text2);line-height:1.7}
+.bc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bc-tag{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);color:var(--c1);padding:2px 8px;border-radius:3px;font-size:11px}
+.search-bar{display:flex;gap:8px;margin-bottom:1.5rem}
+.search-bar input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:7px;font-size:14px;outline:none}
+.search-bar input:focus{border-color:rgba(0,229,255,0.4)}
+/* ARTICLE */
+.article-content{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:1.5rem;line-height:1.9;color:var(--text2);font-size:15px}
+.article-content h2,h3{color:var(--text);margin:1.5rem 0 0.5rem}
+.comments-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.comment-item{padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.comment-item:last-child{border-bottom:none}
+.comment-author{font-size:13px;font-weight:600;color:var(--c1);margin-bottom:4px}
+.comment-date{font-size:11px;color:var(--text3);font-family:monospace}
+.comment-text{font-size:14px;color:var(--text2);margin-top:6px;line-height:1.7}
+/* CV */
+.cv-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.cv-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem}
+.cv-block h3{font-size:11px;letter-spacing:2px;color:var(--c1);opacity:0.7;margin-bottom:1.2rem;font-weight:600}
+.cv-entry{padding:0.8rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.cv-entry:last-child{border-bottom:none;padding-bottom:0}
+.cv-title{font-size:14px;font-weight:500}
+.cv-place{font-size:12px;color:var(--text2);margin-top:2px}
+.cv-year{font-family:monospace;font-size:11px;color:var(--c1);opacity:0.6;margin-top:3px}
+.dl-cv{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);color:var(--c1);padding:12px 28px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;letter-spacing:1px;margin-top:1.5rem;transition:background 0.2s;width:100%}
+.dl-cv:hover{background:rgba(0,229,255,0.12)}
+/* CONTACT */
+.ct-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:1.5rem}
+.ct-info{display:flex;flex-direction:column;gap:1rem}
+.ct-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem}
+.ct-ico{width:38px;height:38px;border-radius:8px;background:rgba(0,229,255,0.07);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ct-lbl{font-size:11px;color:var(--text3);letter-spacing:1px}
+.ct-val{font-size:14px;margin-top:1px}
+.ct-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.4rem}
+.fg{margin-bottom:1rem}
+.fg label{font-size:11px;color:var(--text3);letter-spacing:1.5px;display:block;margin-bottom:6px}
+.fg input,.fg textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:6px;font-size:14px;outline:none;font-family:inherit;transition:border-color 0.2s}
+.fg input:focus,.fg textarea:focus{border-color:rgba(0,229,255,0.4)}
+.fg textarea{height:100px;resize:vertical}
+.send-btn{width:100%;background:var(--c1);color:#060b14;border:none;padding:10px;border-radius:7px;font-weight:800;font-size:13px;letter-spacing:1.5px;cursor:pointer;transition:opacity 0.2s}
+.send-btn:hover{opacity:0.82}
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:1.5rem;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13px;z-index:9999;letter-spacing:1px;transform:translateX(200%);transition:transform 0.3s;border:1px solid}
+.toast.show{transform:translateX(0)}
+.toast.success{background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.3)}
+.toast.error{background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)}
+/* LOADER */
+.loader{text-align:center;padding:3rem;color:var(--text3);font-family:monospace;letter-spacing:2px;font-size:13px}
+footer{text-align:center;padding:2rem;color:var(--text3);font-size:12px;font-family:monospace;letter-spacing:1px;border-top:1px solid var(--border);margin-top:3rem}
+@media(max-width:640px){.grid2,.cv-wrap,.ct-wrap{grid-template-columns:1fr}.kpi-row{flex-wrap:wrap}.kpi{min-width:50%}.nav-links button{padding:5px 6px;font-size:10px;letter-spacing:0.5px}.logo{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrapper">
+<nav>
+  <div class="logo" onclick="showPage('home')">ZS<em>::</em>DEV</div>
+  <div class="nav-links">
+    <button onclick="showPage('home')" id="nb-home" class="active">Home</button>
+    <button onclick="showPage('about')" id="nb-about">About</button>
+    <button onclick="showPage('projects')" id="nb-projects">Projects</button>
+    <button onclick="showPage('blog')" id="nb-blog">Blog</button>
+    <button onclick="showPage('cv')" id="nb-cv">CV</button>
+    <button onclick="showPage('contact')" id="nb-contact">Contact</button>
+  </div>
+  <a href="/admin" class="admin-btn">⚙ Admin</a>
+</nav>
+<div class="toast" id="toast"></div>
+
+<!-- HOME -->
+<div class="page active" id="pg-home">
+  <div class="hero">
+    <div class="hero-eye">🧠</div>
+    <div class="hero-chip">AVAILABLE FOR COLLABORATION</div>
+    <h1>Zaid <span class="cx">Shawish</span></h1>
+    <p class="hero-sub" id="h-tagline">Loading...</p>
+    <div class="hero-btns">
+      <button class="btn-cta" onclick="showPage('projects')">View Projects</button>
+      <button class="btn-ghost" onclick="showPage('cv')">Download CV</button>
+      <button class="btn-ghost" onclick="showPage('contact')">Contact Me</button>
+    </div>
+    <div class="kpi-row" id="kpi-row"><div class="loader">Loading...</div></div>
+  </div>
+  <div id="featured-projects"></div>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="pg-about">
+  <div class="sh"><div class="sh-tag">// ABOUT ME</div><div class="sh-title">Who I Am</div><div class="sh-line"></div></div>
+  <div class="grid2" style="margin-bottom:1.5rem">
+    <div class="card"><h3>PROFILE</h3><p id="ab-text"><span class="loader">Loading...</span></p></div>
+    <div class="card"><h3>TECH STACK</h3><div class="tag-cloud" id="ab-tags"></div></div>
+  </div>
+  <div class="sh" style="margin-bottom:1rem"><div class="sh-tag">// SKILLS</div><div class="sh-title" style="font-size:18px">Competencies</div></div>
+  <div class="sk-grid" id="sk-grid" style="margin-bottom:2rem"><div class="loader">Loading...</div></div>
+  <div class="sh" style="margin-bottom:1rem"><div class="sh-tag">// TIMELINE</div><div class="sh-title" style="font-size:18px">Highlights</div></div>
+  <div id="timeline-list"><div class="loader">Loading...</div></div>
+</div>
+
+<!-- PROJECTS -->
+<div class="page" id="pg-projects">
+  <div class="sh"><div class="sh-tag">// PROJECTS</div><div class="sh-title">What I'm Building</div><div class="sh-line"></div></div>
+  <div class="proj-grid" id="pg-grid"><div class="loader">Loading...</div></div>
+</div>
+
+<!-- BLOG -->
+<div class="page" id="pg-blog">
+  <div class="sh"><div class="sh-tag">// BLOG</div><div class="sh-title">Articles</div><div class="sh-line"></div></div>
+  <div class="search-bar">
+    <input type="text" id="blog-search" placeholder="Search articles..." oninput="searchArticles()">
+  </div>
+  <div id="blog-list"><div class="loader">Loading...</div></div>
+</div>
+
+<!-- ARTICLE -->
+<div class="page" id="pg-article">
+  <button onclick="showPage('blog')" style="background:none;border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;margin-bottom:1.5rem;letter-spacing:1px">← BACK</button>
+  <div id="article-content"></div>
+</div>
+
+<!-- CV -->
+<div class="page" id="pg-cv">
+  <div class="sh"><div class="sh-tag">// RESUME</div><div class="sh-title">Curriculum Vitae</div><div class="sh-line"></div></div>
+  <div class="cv-wrap">
+    <div class="cv-block"><h3>EXPERIENCE</h3><div id="cv-exp"><div class="loader">Loading...</div></div></div>
+    <div class="cv-block"><h3>EDUCATION</h3>
+      <div class="cv-entry"><div class="cv-title">Bachelor's / Master's Degree</div><div class="cv-place">Field of Study — University</div><div class="cv-year">Year</div></div>
+      <div class="cv-entry"><div class="cv-title">Continuing Education Certifications</div><div class="cv-place">UAE Education Authority</div><div class="cv-year">Ongoing</div></div>
+    </div>
+    <div class="cv-block"><h3>PROJECTS</h3><div id="cv-projs"></div></div>
+    <div class="cv-block"><h3>LANGUAGES & SOFT SKILLS</h3>
+      <div class="cv-entry"><div class="cv-title">Arabic</div><div class="cv-place">Native</div></div>
+      <div class="cv-entry"><div class="cv-title">English</div><div class="cv-place">Professional — actively improving</div></div>
+      <div class="cv-entry"><div class="cv-title">Leadership & Administration</div><div class="cv-place">Strategic planning, large-scale operations</div></div>
+    </div>
+  </div>
+  <button class="dl-cv" id="cv-dl-btn">⬇ Download CV (PDF)</button>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="pg-contact">
+  <div class="sh"><div class="sh-tag">// CONTACT</div><div class="sh-title">Get in Touch</div><div class="sh-line"></div></div>
+  <div class="ct-wrap">
+    <div class="ct-info" id="ct-info"><div class="loader">Loading...</div></div>
+    <div class="ct-form">
+      <div class="fg"><label>YOUR NAME</label><input id="c-name" type="text" placeholder="Name"></div>
+      <div class="fg"><label>EMAIL</label><input id="c-email" type="email" placeholder="email@example.com"></div>
+      <div class="fg"><label>SUBJECT</label><input id="c-subject" type="text" placeholder="Topic"></div>
+      <div class="fg"><label>MESSAGE</label><textarea id="c-msg" placeholder="Your message..."></textarea></div>
+      <button class="send-btn" onclick="sendContact()">SEND MESSAGE</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrapper -->
+<footer>© 2025 Zaid Shawish &nbsp;·&nbsp; ZS::DEV &nbsp;·&nbsp; UAE</footer>
+
+<script>
+let S = {}; // settings cache
+let searchTimer = null;
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  document.getElementById('pg-' + id).classList.add('active');
+  const nb = document.getElementById('nb-' + id);
+  if (nb) nb.classList.add('active');
+  window.scrollTo(0, 0);
+  // Lazy load
+  if (id === 'home' && !document.getElementById('kpi-row').dataset.loaded) loadHome();
+  if (id === 'about' && !document.getElementById('ab-text').dataset.loaded) loadAbout();
+  if (id === 'projects' && !document.getElementById('pg-grid').dataset.loaded) loadProjects();
+  if (id === 'blog' && !document.getElementById('blog-list').dataset.loaded) loadBlog();
+  if (id === 'cv' && !document.getElementById('cv-exp').dataset.loaded) loadCV();
+  if (id === 'contact' && !document.getElementById('ct-info').dataset.loaded) loadContact();
+}
+
+// ===== TOAST =====
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== API =====
+async function api(url) {
+  const r = await fetch(url);
+  return r.json();
+}
+
+// ===== HOME =====
+async function loadHome() {
+  S = await api('/api/settings');
+  document.getElementById('h-tagline').textContent = S.hero_tagline || '';
+  document.title = S.site_title || 'Zaid Shawish';
+  const kpiRow = document.getElementById('kpi-row');
+  kpiRow.innerHTML = `
+    <div class="kpi"><div class="kpi-num">${S.stat1_num||'259K+'}</div><div class="kpi-lbl">${S.stat1_label||'STUDENTS'}</div></div>
+    <div class="kpi"><div class="kpi-num">${S.stat2_num||'4'}</div><div class="kpi-lbl">${S.stat2_label||'PROJECTS'}</div></div>
+    <div class="kpi"><div class="kpi-num">${S.stat3_num||'UAE'}</div><div class="kpi-lbl">${S.stat3_label||'BASED IN'}</div></div>
+    <div class="kpi"><div class="kpi-num">${S.stat4_num||'10+'}</div><div class="kpi-lbl">${S.stat4_label||'YEARS EXP.'}</div></div>`;
+  kpiRow.dataset.loaded = '1';
+  // Featured projects
+  const projects = await api('/api/projects');
+  const featured = projects.filter(p => p.featured).slice(0, 3);
+  if (featured.length) {
+    document.getElementById('featured-projects').innerHTML = `
+      <div class="sh" style="margin-top:2rem"><div class="sh-tag">// FEATURED</div><div class="sh-title" style="font-size:18px">Selected Projects</div></div>
+      <div class="proj-grid">${featured.map(projCard).join('')}</div>`;
+  }
+}
+
+// ===== ABOUT =====
+async function loadAbout() {
+  if (!Object.keys(S).length) S = await api('/api/settings');
+  const el = document.getElementById('ab-text');
+  el.textContent = S.about_text || '';
+  el.dataset.loaded = '1';
+  // Tech tags from skills categories
+  const skills = await api('/api/skills');
+  const techSkills = skills.filter(s => s.category === 'Technical');
+  document.getElementById('ab-tags').innerHTML = techSkills.map(s => `<span class="tc">${s.name}</span>`).join('');
+  // All skills
+  document.getElementById('sk-grid').innerHTML = skills.map(s => `
+    <div class="sk"><div class="sk-name">${s.name}</div>
+    <div class="sk-bar"><div class="sk-fill" style="width:${s.level}%"></div></div>
+    <div class="sk-pct">${s.level}%</div></div>`).join('');
+  // Timeline
+  const tl = await api('/api/timeline');
+  document.getElementById('timeline-list').innerHTML = tl.map(t => `
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">${t.year}</div>
+      <div class="tl-text"><strong>${t.title}</strong><br>${t.description || ''}</div>
+    </div>`).join('');
+}
+
+// ===== PROJECTS =====
+async function loadProjects() {
+  const projects = await api('/api/projects');
+  const el = document.getElementById('pg-grid');
+  el.innerHTML = projects.length ? projects.map(projCard).join('') : '<div class="loader">No projects yet.</div>';
+  el.dataset.loaded = '1';
+}
+
+function projCard(p) {
+  const tags = Array.isArray(p.tags) ? p.tags : [];
+  const stClass = p.status === 'active' ? 'b-active' : p.status === 'completed' ? 'b-done' : 'b-dev';
+  const stLabel = p.status === 'active' ? '● Active' : p.status === 'completed' ? '✓ Completed' : '◐ In Development';
+  return `<div class="pj">
+    <div class="pj-ico">${p.icon||'🔧'}</div>
+    <div class="pj-name">${p.title}</div>
+    <div class="pj-desc">${p.description||''}</div>
+    <div class="pj-tags">${tags.map(t=>`<span class="pj-tag">${t}</span>`).join('')}</div>
+    <span class="badge ${stClass}">${stLabel}</span>
+    ${p.github_url?`<a href="${p.github_url}" target="_blank" style="font-size:11px;color:var(--c1);text-decoration:none;margin-left:8px">GitHub →</a>`:''}
+    ${p.demo_url?`<a href="${p.demo_url}" target="_blank" style="font-size:11px;color:var(--c3);text-decoration:none;margin-left:8px">Demo →</a>`:''}
+  </div>`;
+}
+
+// ===== BLOG =====
+async function loadBlog(search = '') {
+  const articles = await api('/api/articles' + (search ? `?search=${encodeURIComponent(search)}` : ''));
+  const el = document.getElementById('blog-list');
+  el.innerHTML = articles.length ? articles.map(a => `
+    <div class="blog-card" onclick="loadArticle('${a.slug}')">
+      <div class="bc-meta">${new Date(a.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})} · ${a.category} · ${a.views} views</div>
+      <div class="bc-title">${a.title}</div>
+      <div class="bc-excerpt">${a.excerpt||''}</div>
+      <div class="bc-tags">${(Array.isArray(a.tags)?a.tags:[]).map(t=>`<span class="bc-tag">${t}</span>`).join('')}</div>
+    </div>`).join('') : '<div class="loader">No articles published yet.</div>';
+  el.dataset.loaded = '1';
+}
+
+function searchArticles() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadBlog(document.getElementById('blog-search').value), 400);
+}
+
+async function loadArticle(slug) {
+  const a = await api('/api/articles/' + slug);
+  if (a.error) { toast('Article not found', 'error'); return; }
+  const tags = Array.isArray(a.tags) ? a.tags : [];
+  document.getElementById('article-content').innerHTML = `
+    <div class="card" style="margin-bottom:1rem">
+      <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:8px">${new Date(a.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})} · ${a.category}</div>
+      <h1 style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:1rem">${a.title}</h1>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem">${tags.map(t=>`<span class="bc-tag">${t}</span>`).join('')}</div>
+    </div>
+    <div class="article-content">${a.content||''}</div>
+    <div class="comments-section">
+      <h3 style="font-size:16px;margin-bottom:1.2rem">Comments (${a.comments?.length||0})</h3>
+      ${(a.comments||[]).map(c=>`<div class="comment-item"><div class="comment-author">${c.author_name} <span class="comment-date">· ${new Date(c.created_at).toLocaleDateString()}</span></div><div class="comment-text">${c.content}</div></div>`).join('')||'<div style="color:var(--text3);font-size:13px">No comments yet.</div>'}
+      <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.2rem">
+        <h4 style="font-size:13px;letter-spacing:2px;color:var(--c1);opacity:0.7;margin-bottom:1rem">LEAVE A COMMENT</h4>
+        <div class="fg"><label>NAME</label><input id="cm-name" type="text" placeholder="Your name"></div>
+        <div class="fg"><label>EMAIL (optional)</label><input id="cm-email" type="email" placeholder="email@example.com"></div>
+        <div class="fg"><label>COMMENT</label><textarea id="cm-text" placeholder="Your comment..."></textarea></div>
+        <button class="send-btn" style="max-width:200px" onclick="postComment('${slug}')">POST COMMENT</button>
+      </div>
+    </div>`;
+  showPage('article');
+}
+
+async function postComment(slug) {
+  const name = document.getElementById('cm-name').value.trim();
+  const email = document.getElementById('cm-email').value.trim();
+  const content = document.getElementById('cm-text').value.trim();
+  if (!name || !content) { toast('Name and comment required', 'error'); return; }
+  const r = await fetch(`/api/articles/${slug}/comments`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ author_name: name, author_email: email, content }) });
+  const data = await r.json();
+  if (data.success) { toast('Comment submitted for review ✓'); document.getElementById('cm-name').value=''; document.getElementById('cm-text').value=''; }
+  else toast(data.error || 'Error', 'error');
+}
+
+// ===== CV =====
+async function loadCV() {
+  if (!Object.keys(S).length) S = await api('/api/settings');
+  const projects = await api('/api/projects');
+  document.getElementById('cv-exp').innerHTML = `
+    <div class="cv-entry"><div class="cv-title">Education Development Expert</div><div class="cv-place">UAE — Integrated Continuing Education</div><div class="cv-year">2020 – Present</div></div>
+    <div class="cv-entry"><div class="cv-title">Academic Assessment Lead</div><div class="cv-place">Correctional Facility Education — 259K+ students</div><div class="cv-year">2019 – Present</div></div>
+    <div class="cv-entry"><div class="cv-title">AI / Hardware Systems Developer</div><div class="cv-place">Independent Projects</div><div class="cv-year">2022 – Present</div></div>`;
+  document.getElementById('cv-exp').dataset.loaded = '1';
+  document.getElementById('cv-projs').innerHTML = projects.slice(0, 4).map(p => `
+    <div class="cv-entry"><div class="cv-title">${p.title}</div><div class="cv-place">${p.description?.substring(0,80)||''}</div></div>`).join('');
+  const cvBtn = document.getElementById('cv-dl-btn');
+  if (S.cv_url) { cvBtn.onclick = () => window.open(S.cv_url, '_blank'); }
+  else { cvBtn.onclick = () => toast('CV PDF not uploaded yet. Add it in Admin → Settings.', 'error'); }
+}
+
+// ===== CONTACT =====
+async function loadContact() {
+  if (!Object.keys(S).length) S = await api('/api/settings');
+  document.getElementById('ct-info').innerHTML = `
+    <div class="ct-item"><div class="ct-ico">📍</div><div><div class="ct-lbl">LOCATION</div><div class="ct-val">${S.location||'UAE'}</div></div></div>
+    <div class="ct-item"><div class="ct-ico">✉️</div><div><div class="ct-lbl">EMAIL</div><div class="ct-val">${S.email||''}</div></div></div>
+    <div class="ct-item"><div class="ct-ico">📱</div><div><div class="ct-lbl">PHONE</div><div class="ct-val">${S.phone||''}</div></div></div>
+    <div class="ct-item"><div class="ct-ico">💼</div><div><div class="ct-lbl">LINKEDIN</div><div class="ct-val">${S.linkedin||''}</div></div></div>`;
+  document.getElementById('ct-info').dataset.loaded = '1';
+}
+
+async function sendContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const subject = document.getElementById('c-subject').value.trim();
+  const message = document.getElementById('c-msg').value.trim();
+  if (!name || !message) { toast('Name and message are required', 'error'); return; }
+  const r = await fetch('/api/contact', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, email, subject, message }) });
+  const data = await r.json();
+  if (data.success) { toast('Message sent! Thank you ✓'); ['c-name','c-email','c-subject','c-msg'].forEach(id => document.getElementById(id).value=''); }
+  else toast(data.error || 'Error sending message', 'error');
+}
+
+// ===== INIT =====
+loadHome();
+</script>
+</body>
+</html>

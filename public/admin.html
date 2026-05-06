@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Zaid Shawish</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060b14;--bg2:#0d1526;--bg3:#111f35;--c1:#00e5ff;--c2:#7c3aed;--c3:#10b981;--c4:#f59e0b;--text:#dde6f0;--text2:#7a93b0;--text3:#3d5a78;--border:#1a2e47;--card:#0d1a2e;--danger:#ef4444}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:100}
+.sb-logo{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);font-family:monospace;font-size:14px;font-weight:700;color:var(--c1);letter-spacing:2px}
+.sb-logo em{color:var(--text3);font-style:normal}
+.sb-nav{flex:1;padding:1rem 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;color:var(--text2);cursor:pointer;font-size:13px;letter-spacing:1px;transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
+.sb-item:hover,.sb-item.active{color:var(--c1);background:rgba(0,229,255,0.06)}
+.sb-item.active{border-right:2px solid var(--c1)}
+.sb-icon{width:18px;text-align:center;font-size:15px}
+.sb-section{padding:6px 1.5rem 2px;font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:8px}
+.sb-bottom{padding:1rem;border-top:1px solid var(--border)}
+.sb-user{font-size:12px;color:var(--text2);margin-bottom:8px;font-family:monospace}
+.sb-user strong{color:var(--c1)}
+.logout-btn{width:100%;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444;padding:7px;border-radius:6px;cursor:pointer;font-size:12px;letter-spacing:1px;transition:background 0.2s}
+.logout-btn:hover{background:rgba(239,68,68,0.2)}
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:rgba(6,11,20,0.95);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(8px)}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.notif-badge{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
+.back-site{font-size:12px;color:var(--text3);text-decoration:none;letter-spacing:1px;transition:color 0.2s}
+.back-site:hover{color:var(--c1)}
+.content{flex:1;padding:2rem;max-width:1100px}
+/* TABS */
+.tab-section{display:none}.tab-section.active{display:block}
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;text-align:center}
+.stat-num{font-size:2rem;font-weight:700;font-family:monospace}
+.stat-lbl{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:4px}
+.stat-card.blue .stat-num{color:var(--c1)}
+.stat-card.purple .stat-num{color:#a78bfa}
+.stat-card.green .stat-num{color:#34d399}
+.stat-card.yellow .stat-num{color:#fbbf24}
+.recent-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+/* COMMON FORM */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.form-card h3{font-size:13px;letter-spacing:2px;color:var(--c1);opacity:0.8;margin-bottom:1.2rem;font-weight:600}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.ff{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.ff label{font-size:11px;color:var(--text3);letter-spacing:1px}
+.ff input,.ff textarea,.ff select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;outline:none;transition:border-color 0.2s;font-family:inherit;width:100%}
+.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:rgba(0,229,255,0.4)}
+.ff textarea{height:80px;resize:vertical}
+.ff textarea.tall{height:200px}
+.btn-save{background:var(--c3);color:#000;border:none;padding:9px 22px;border-radius:7px;cursor:pointer;font-weight:700;font-size:12px;letter-spacing:1px;transition:opacity 0.2s}
+.btn-save:hover{opacity:0.82}
+.btn-danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;transition:background 0.2s}
+.btn-danger:hover{background:rgba(239,68,68,0.2)}
+.btn-edit{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:var(--c1);padding:5px 12px;border-radius:5px;cursor:pointer;font-size:11px;transition:background 0.2s}
+.btn-edit:hover{background:rgba(0,229,255,0.15)}
+.btn-approve{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#34d399;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px}
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.tbl-head{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.tbl-head h3{font-size:13px;letter-spacing:2px;color:var(--c1);opacity:0.8;font-weight:600}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;letter-spacing:1.5px;color:var(--text3);padding:10px 1.5rem;text-align:left;border-bottom:1px solid var(--border);font-weight:400}
+td{font-size:13px;color:var(--text2);padding:10px 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.td-title{color:var(--text);font-weight:500}
+.td-actions{display:flex;gap:6px;align-items:center}
+/* STATUS BADGE */
+.s-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px}
+.s-active{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+.s-dev{background:rgba(245,158,11,0.1);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.s-done{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+.s-pending{background:rgba(245,158,11,0.1);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.s-published{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+.s-draft{background:rgba(100,116,139,0.1);color:#94a3b8;border:1px solid rgba(100,116,139,0.2)}
+/* MEDIA */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem}
+.media-item{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative}
+.media-thumb{width:100%;height:100px;object-fit:cover;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text3)}
+.media-info{padding:8px}
+.media-name{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.media-size{font-size:10px;color:var(--text3);font-family:monospace;margin-top:2px}
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:1.5rem}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--c1);background:rgba(0,229,255,0.03)}
+.upload-zone p{color:var(--text3);font-size:13px;margin-top:8px}
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)}
+.login-box{background:var(--card);border:1px solid rgba(0,229,255,0.15);border-radius:16px;padding:2.5rem 2rem;width:360px}
+.login-logo{font-family:monospace;font-size:18px;font-weight:700;color:var(--c1);letter-spacing:3px;text-align:center;margin-bottom:0.5rem}
+.login-sub{text-align:center;color:var(--text3);font-size:12px;letter-spacing:2px;margin-bottom:2rem}
+.login-error{color:#ef4444;font-size:12px;text-align:center;margin-bottom:1rem;min-height:16px}
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:1.5rem;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13px;z-index:9999;letter-spacing:1px;transform:translateX(200%);transition:transform 0.3s;border:1px solid}
+.toast.show{transform:translateX(0)}
+.toast.success{background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.3)}
+.toast.error{background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)}
+/* UNREAD DOT */
+.unread{width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;display:inline-block}
+@media(max-width:768px){.sidebar{width:180px}.main{margin-left:180px}.dash-grid{grid-template-columns:1fr 1fr}.recent-grid{grid-template-columns:1fr}.fr{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-wrap" id="login-page">
+  <div class="login-box">
+    <div class="login-logo">ZS::ADMIN</div>
+    <div class="login-sub">SECURE ACCESS</div>
+    <div class="login-error" id="login-err"></div>
+    <div class="ff"><label>USERNAME</label><input id="l-user" type="text" placeholder="zaid" autocomplete="username"></div>
+    <div class="ff"><label>PASSWORD</label><input id="l-pass" type="password" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-save" style="width:100%;padding:11px;font-size:13px;margin-top:0.5rem" onclick="doLogin()">UNLOCK PANEL</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" style="display:none;width:100%;display:flex">
+<div class="sidebar">
+  <div class="sb-logo">ZS<em>::</em>ADMIN</div>
+  <nav class="sb-nav">
+    <div class="sb-section">OVERVIEW</div>
+    <button class="sb-item active" onclick="showTab('dashboard')" id="sb-dashboard"><span class="sb-icon">📊</span> Dashboard</button>
+    <div class="sb-section">CONTENT</div>
+    <button class="sb-item" onclick="showTab('projects')" id="sb-projects"><span class="sb-icon">🚀</span> Projects</button>
+    <button class="sb-item" onclick="showTab('articles')" id="sb-articles"><span class="sb-icon">📝</span> Articles</button>
+    <button class="sb-item" onclick="showTab('comments')" id="sb-comments"><span class="sb-icon">💬</span> Comments</button>
+    <div class="sb-section">PROFILE</div>
+    <button class="sb-item" onclick="showTab('skills')" id="sb-skills"><span class="sb-icon">⚡</span> Skills</button>
+    <button class="sb-item" onclick="showTab('timeline')" id="sb-timeline"><span class="sb-icon">📅</span> Timeline</button>
+    <div class="sb-section">SYSTEM</div>
+    <button class="sb-item" onclick="showTab('messages')" id="sb-messages"><span class="sb-icon">✉️</span> Messages</button>
+    <button class="sb-item" onclick="showTab('media')" id="sb-media"><span class="sb-icon">🖼️</span> Media</button>
+    <button class="sb-item" onclick="showTab('settings')" id="sb-settings"><span class="sb-icon">⚙️</span> Settings</button>
+    <button class="sb-item" onclick="showTab('password')" id="sb-password"><span class="sb-icon">🔐</span> Password</button>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-user">Logged in as <strong id="sb-username">...</strong></div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-right">
+      <span id="msg-badge" class="notif-badge" style="display:none">0 new msgs</span>
+      <a href="/" target="_blank" class="back-site">← View Site</a>
+    </div>
+  </div>
+
+  <div class="content">
+  <div class="toast" id="toast"></div>
+
+  <!-- DASHBOARD -->
+  <div class="tab-section active" id="tab-dashboard">
+    <div class="dash-grid" id="dash-stats"></div>
+    <div class="recent-grid">
+      <div class="tbl-wrap"><div class="tbl-head"><h3>RECENT MESSAGES</h3></div><div id="dash-msgs"></div></div>
+      <div class="tbl-wrap"><div class="tbl-head"><h3>PENDING COMMENTS</h3></div><div id="dash-comments"></div></div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="tab-section" id="tab-projects">
+    <div class="form-card" id="proj-form-card">
+      <h3 id="proj-form-title">ADD PROJECT</h3>
+      <div class="fr">
+        <div class="ff"><label>TITLE</label><input id="pf-title" placeholder="Project name"></div>
+        <div class="ff"><label>ICON EMOJI</label><input id="pf-icon" value="🔧" maxlength="4"></div>
+      </div>
+      <div class="ff"><label>SHORT DESCRIPTION</label><textarea id="pf-desc" placeholder="Brief description..."></textarea></div>
+      <div class="ff"><label>DETAILED DESCRIPTION</label><textarea id="pf-longdesc" placeholder="Full project details..."></textarea></div>
+      <div class="fr">
+        <div class="ff"><label>TAGS (comma separated)</label><input id="pf-tags" placeholder="AI, Python, IoT"></div>
+        <div class="ff"><label>STATUS</label>
+          <select id="pf-status"><option value="active">Active</option><option value="dev">In Development</option><option value="completed">Completed</option></select>
+        </div>
+      </div>
+      <div class="fr">
+        <div class="ff"><label>GITHUB URL</label><input id="pf-github" placeholder="https://github.com/..."></div>
+        <div class="ff"><label>DEMO URL</label><input id="pf-demo" placeholder="https://..."></div>
+      </div>
+      <div class="ff" style="flex-direction:row;align-items:center;gap:8px;margin-bottom:1rem">
+        <input type="checkbox" id="pf-featured" style="width:16px;height:16px">
+        <label for="pf-featured" style="font-size:13px;color:var(--text2);letter-spacing:0">Featured on homepage</label>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-save" onclick="saveProject()">💾 Save Project</button>
+        <button class="btn-danger" id="pf-cancel" style="display:none" onclick="cancelEditProject()">Cancel</button>
+      </div>
+      <input type="hidden" id="pf-id">
+    </div>
+    <div class="tbl-wrap"><div class="tbl-head"><h3>ALL PROJECTS</h3></div>
+      <table><thead><tr><th>PROJECT</th><th>STATUS</th><th>FEATURED</th><th>ACTIONS</th></tr></thead>
+      <tbody id="proj-tbody"></tbody></table></div>
+  </div>
+
+  <!-- ARTICLES -->
+  <div class="tab-section" id="tab-articles">
+    <div class="form-card">
+      <h3 id="art-form-title">ADD ARTICLE</h3>
+      <div class="fr">
+        <div class="ff"><label>TITLE</label><input id="af-title" placeholder="Article title"></div>
+        <div class="ff"><label>CATEGORY</label><input id="af-cat" placeholder="General" value="General"></div>
+      </div>
+      <div class="ff"><label>EXCERPT (short summary)</label><textarea id="af-excerpt" placeholder="Brief excerpt..."></textarea></div>
+      <div class="ff"><label>CONTENT (HTML supported)</label><textarea class="tall" id="af-content" placeholder="&lt;p&gt;Article content...&lt;/p&gt;"></textarea></div>
+      <div class="fr">
+        <div class="ff"><label>TAGS (comma separated)</label><input id="af-tags" placeholder="Tech, AI, Education"></div>
+        <div class="ff"><label>STATUS</label>
+          <select id="af-status"><option value="draft">Draft</option><option value="published">Published</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-save" onclick="saveArticle()">💾 Save Article</button>
+        <button class="btn-danger" id="af-cancel" style="display:none" onclick="cancelEditArticle()">Cancel</button>
+      </div>
+      <input type="hidden" id="af-id">
+    </div>
+    <div class="tbl-wrap"><div class="tbl-head"><h3>ALL ARTICLES</h3></div>
+      <table><thead><tr><th>TITLE</th><th>CATEGORY</th><th>STATUS</th><th>VIEWS</th><th>DATE</th><th>ACTIONS</th></tr></thead>
+      <tbody id="art-tbody"></tbody></table></div>
+  </div>
+
+  <!-- COMMENTS -->
+  <div class="tab-section" id="tab-comments">
+    <div class="tbl-wrap"><div class="tbl-head"><h3>ALL COMMENTS</h3></div>
+      <table><thead><tr><th>AUTHOR</th><th>ARTICLE</th><th>COMMENT</th><th>STATUS</th><th>DATE</th><th>ACTIONS</th></tr></thead>
+      <tbody id="comm-tbody"></tbody></table></div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="tab-section" id="tab-skills">
+    <div class="form-card">
+      <h3>ADD SKILL</h3>
+      <div class="fr">
+        <div class="ff"><label>SKILL NAME</label><input id="sf-name" placeholder="Python"></div>
+        <div class="ff"><label>LEVEL (0–100)</label><input id="sf-level" type="number" min="0" max="100" value="80"></div>
+      </div>
+      <div class="ff"><label>CATEGORY</label>
+        <select id="sf-cat"><option value="Technical">Technical</option><option value="Professional">Professional</option><option value="Language">Language</option></select>
+      </div>
+      <button class="btn-save" onclick="addSkill()">+ Add Skill</button>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-head"><h3>ALL SKILLS</h3></div>
+      <table><thead><tr><th>SKILL</th><th>LEVEL</th><th>CATEGORY</th><th>ACTIONS</th></tr></thead>
+      <tbody id="sk-tbody"></tbody></table></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="tab-section" id="tab-timeline">
+    <div class="form-card">
+      <h3>ADD TIMELINE ENTRY</h3>
+      <div class="fr">
+        <div class="ff"><label>YEAR / PERIOD</label><input id="tf-year" placeholder="2024+"></div>
+        <div class="ff"><label>TITLE</label><input id="tf-title" placeholder="Achievement title"></div>
+      </div>
+      <div class="ff"><label>DESCRIPTION</label><textarea id="tf-desc" placeholder="Description..."></textarea></div>
+      <button class="btn-save" onclick="addTimeline()">+ Add Entry</button>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-head"><h3>TIMELINE</h3></div>
+      <table><thead><tr><th>YEAR</th><th>TITLE</th><th>DESCRIPTION</th><th>ACTIONS</th></tr></thead>
+      <tbody id="tl-tbody"></tbody></table></div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="tab-section" id="tab-messages">
+    <div class="tbl-wrap"><div class="tbl-head"><h3>INBOX</h3></div>
+      <table><thead><tr><th></th><th>FROM</th><th>SUBJECT</th><th>MESSAGE</th><th>DATE</th><th>ACTIONS</th></tr></thead>
+      <tbody id="msg-tbody"></tbody></table></div>
+  </div>
+
+  <!-- MEDIA -->
+  <div class="tab-section" id="tab-media">
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <div style="font-size:32px">📤</div>
+      <p>Click or drag files to upload (Images, PDFs, max 10MB)</p>
+      <input type="file" id="file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx" onchange="uploadFiles(this.files)">
+    </div>
+    <div class="media-grid" id="media-grid"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="tab-section" id="tab-settings">
+    <div class="form-card">
+      <h3>SITE IDENTITY</h3>
+      <div class="fr">
+        <div class="ff"><label>SITE TITLE</label><input id="st-title"></div>
+        <div class="ff"><label>SUBTITLE</label><input id="st-subtitle"></div>
+      </div>
+      <div class="ff"><label>SEO DESCRIPTION</label><textarea id="st-desc"></textarea></div>
+      <div class="ff"><label>SEO KEYWORDS</label><input id="st-keywords"></div>
+    </div>
+    <div class="form-card">
+      <h3>HERO SECTION</h3>
+      <div class="ff"><label>TAGLINE</label><input id="st-tagline"></div>
+      <div class="fr">
+        <div class="ff"><label>STAT 1 NUMBER</label><input id="st-s1n"></div>
+        <div class="ff"><label>STAT 1 LABEL</label><input id="st-s1l"></div>
+      </div>
+      <div class="fr">
+        <div class="ff"><label>STAT 2 NUMBER</label><input id="st-s2n"></div>
+        <div class="ff"><label>STAT 2 LABEL</label><input id="st-s2l"></div>
+      </div>
+      <div class="fr">
+        <div class="ff"><label>STAT 3 NUMBER</label><input id="st-s3n"></div>
+        <div class="ff"><label>STAT 3 LABEL</label><input id="st-s3l"></div>
+      </div>
+      <div class="fr">
+        <div class="ff"><label>STAT 4 NUMBER</label><input id="st-s4n"></div>
+        <div class="ff"><label>STAT 4 LABEL</label><input id="st-s4l"></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>ABOUT & CONTACT</h3>
+      <div class="ff"><label>ABOUT TEXT</label><textarea class="tall" id="st-about"></textarea></div>
+      <div class="fr">
+        <div class="ff"><label>EMAIL</label><input id="st-email"></div>
+        <div class="ff"><label>PHONE</label><input id="st-phone"></div>
+      </div>
+      <div class="fr">
+        <div class="ff"><label>LINKEDIN</label><input id="st-linkedin"></div>
+        <div class="ff"><label>LOCATION</label><input id="st-location"></div>
+      </div>
+      <div class="ff"><label>CV PDF URL (Google Drive / Dropbox)</label><input id="st-cv"></div>
+    </div>
+    <div class="form-card">
+      <h3>FEATURES</h3>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem">
+        <input type="checkbox" id="st-comments" style="width:16px;height:16px">
+        <label for="st-comments" style="font-size:13px;color:var(--text2);letter-spacing:0">Enable comments on articles</label>
+      </div>
+      <button class="btn-save" onclick="saveSettings()">💾 Save All Settings</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="tab-section" id="tab-password">
+    <div class="form-card" style="max-width:400px">
+      <h3>CHANGE PASSWORD</h3>
+      <div class="ff"><label>CURRENT PASSWORD</label><input id="pw-curr" type="password"></div>
+      <div class="ff"><label>NEW PASSWORD</label><input id="pw-new" type="password"></div>
+      <div class="ff"><label>CONFIRM NEW PASSWORD</label><input id="pw-conf" type="password"></div>
+      <button class="btn-save" onclick="changePassword()">🔐 Change Password</button>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /admin-panel -->
+
+<script>
+let token = localStorage.getItem('admin_token');
+let currentUser = null;
+
+// ===== AUTH =====
+async function doLogin() {
+  const u = document.getElementById('l-user').value;
+  const p = document.getElementById('l-pass').value;
+  const r = await fetch('/api/admin/login', { method: 'POST', headers: {'Content-Type':'application/json'}, credentials: 'include', body: JSON.stringify({username:u, password:p}) });
+  const data = await r.json();
+  if (data.success) {
+    token = data.token;
+    localStorage.setItem('admin_token', token);
+    showAdmin();
+  } else {
+    document.getElementById('login-err').textContent = data.error || 'Login failed';
+  }
+}
+
+async function verifyToken() {
+  if (!token) return showLogin();
+  const r = await fetch('/api/admin/me', { headers: authHeaders(), credentials: 'include' });
+  if (!r.ok) { localStorage.removeItem('admin_token'); return showLogin(); }
+  currentUser = await r.json();
+  showAdmin();
+}
+
+function showLogin() {
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('admin-panel').style.display = 'none';
+}
+
+function showAdmin() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'flex';
+  if (currentUser) document.getElementById('sb-username').textContent = currentUser.username;
+  loadDashboard();
+}
+
+async function doLogout() {
+  await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
+  localStorage.removeItem('admin_token');
+  token = null;
+  showLogin();
+}
+
+function authHeaders() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }; }
+async function api(url, method='GET', body=null) {
+  const opts = { method, headers: authHeaders(), credentials: 'include' };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  return r.json();
+}
+
+// ===== TOAST =====
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast '+type+' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== TABS =====
+function showTab(id) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.getElementById('sb-'+id).classList.add('active');
+  const titles = { dashboard:'Dashboard', projects:'Projects', articles:'Articles', comments:'Comments', skills:'Skills', timeline:'Timeline', messages:'Messages', media:'Media', settings:'Settings', password:'Change Password' };
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+  const loaders = { projects: loadProjects, articles: loadArticles, comments: loadComments, skills: loadSkills, timeline: loadTimeline, messages: loadMessages, media: loadMedia, settings: loadSettings };
+  if (loaders[id]) loaders[id]();
+}
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+  const d = await api('/api/admin/dashboard');
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-num">${d.projects}</div><div class="stat-lbl">PROJECTS</div></div>
+    <div class="stat-card purple"><div class="stat-num">${d.articles}</div><div class="stat-lbl">ARTICLES</div></div>
+    <div class="stat-card yellow"><div class="stat-num">${d.messages}</div><div class="stat-lbl">NEW MSGS</div></div>
+    <div class="stat-card green"><div class="stat-num">${d.comments}</div><div class="stat-lbl">PENDING CMTS</div></div>`;
+  if (d.messages > 0) { document.getElementById('msg-badge').textContent = d.messages + ' new'; document.getElementById('msg-badge').style.display=''; }
+  document.getElementById('dash-msgs').innerHTML = d.recent_messages.length ?
+    d.recent_messages.map(m => `<div style="padding:10px 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px"><div style="color:var(--text);font-weight:500">${m.name} ${!m.is_read?'<span class="unread"></span>':''}</div><div style="color:var(--text3);font-size:11px;margin-top:2px">${(m.subject||m.message).substring(0,60)}...</div></div>`).join('') :
+    '<div style="padding:1.5rem;color:var(--text3);font-size:13px">No messages</div>';
+  document.getElementById('dash-comments').innerHTML = d.recent_comments.length ?
+    d.recent_comments.map(c => `<div style="padding:10px 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px"><div style="color:var(--text);font-weight:500">${c.author_name} on "${c.article_title||'?'}"</div><div style="color:var(--text3);font-size:11px;margin-top:2px">${c.content.substring(0,60)}...</div></div>`).join('') :
+    '<div style="padding:1.5rem;color:var(--text3);font-size:13px">No pending comments</div>';
+}
+
+// ===== PROJECTS =====
+let editingProject = null;
+async function loadProjects() {
+  const projects = await api('/api/admin/projects');
+  document.getElementById('proj-tbody').innerHTML = projects.map(p => {
+    const stClass = p.status==='active'?'s-active':p.status==='completed'?'s-done':'s-dev';
+    return `<tr><td class="td-title">${p.icon||''} ${p.title}</td>
+      <td><span class="s-badge ${stClass}">${p.status}</span></td>
+      <td>${p.featured?'⭐':''}</td>
+      <td class="td-actions"><button class="btn-edit" onclick="editProject(${p.id})">Edit</button><button class="btn-danger" onclick="deleteProject(${p.id})">Delete</button></td></tr>`;
+  }).join('') || '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text3)">No projects yet</td></tr>';
+}
+async function editProject(id) {
+  const p = await api('/api/admin/projects');
+  const proj = p.find(x => x.id == id);
+  if (!proj) return;
+  editingProject = id;
+  document.getElementById('pf-id').value = id;
+  document.getElementById('pf-title').value = proj.title;
+  document.getElementById('pf-icon').value = proj.icon||'🔧';
+  document.getElementById('pf-desc').value = proj.description||'';
+  document.getElementById('pf-longdesc').value = proj.long_description||'';
+  document.getElementById('pf-tags').value = (Array.isArray(proj.tags)?proj.tags:JSON.parse(proj.tags||'[]')).join(', ');
+  document.getElementById('pf-status').value = proj.status;
+  document.getElementById('pf-github').value = proj.github_url||'';
+  document.getElementById('pf-demo').value = proj.demo_url||'';
+  document.getElementById('pf-featured').checked = !!proj.featured;
+  document.getElementById('proj-form-title').textContent = 'EDIT PROJECT';
+  document.getElementById('pf-cancel').style.display = '';
+  document.getElementById('proj-form-card').scrollIntoView({behavior:'smooth'});
+}
+async function saveProject() {
+  const id = document.getElementById('pf-id').value;
+  const body = {
+    title: document.getElementById('pf-title').value.trim(),
+    icon: document.getElementById('pf-icon').value,
+    description: document.getElementById('pf-desc').value,
+    long_description: document.getElementById('pf-longdesc').value,
+    tags: document.getElementById('pf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    status: document.getElementById('pf-status').value,
+    github_url: document.getElementById('pf-github').value,
+    demo_url: document.getElementById('pf-demo').value,
+    featured: document.getElementById('pf-featured').checked
+  };
+  if (!body.title) { toast('Title required', 'error'); return; }
+  const url = id ? `/api/admin/projects/${id}` : '/api/admin/projects';
+  const method = id ? 'PUT' : 'POST';
+  const r = await api(url, method, body);
+  if (r.success) { toast('Project saved ✓'); cancelEditProject(); loadProjects(); }
+  else toast(r.error||'Error', 'error');
+}
+function cancelEditProject() { editingProject=null; document.getElementById('pf-id').value=''; ['pf-title','pf-desc','pf-longdesc','pf-tags','pf-github','pf-demo'].forEach(i=>document.getElementById(i).value=''); document.getElementById('pf-icon').value='🔧'; document.getElementById('pf-featured').checked=false; document.getElementById('proj-form-title').textContent='ADD PROJECT'; document.getElementById('pf-cancel').style.display='none'; }
+async function deleteProject(id) { if (!confirm('Delete this project?')) return; const r = await api('/api/admin/projects/'+id,'DELETE'); if(r.success){toast('Deleted');loadProjects();}else toast(r.error,'error'); }
+
+// ===== ARTICLES =====
+async function loadArticles() {
+  const arts = await api('/api/admin/articles');
+  document.getElementById('art-tbody').innerHTML = arts.map(a => `
+    <tr><td class="td-title">${a.title}</td><td>${a.category}</td>
+    <td><span class="s-badge ${a.status==='published'?'s-published':'s-draft'}">${a.status}</span></td>
+    <td>${a.views}</td><td>${new Date(a.created_at).toLocaleDateString()}</td>
+    <td class="td-actions"><button class="btn-edit" onclick="editArticle(${a.id})">Edit</button><button class="btn-danger" onclick="deleteArticle(${a.id})">Delete</button></td></tr>`).join('')
+    || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text3)">No articles yet</td></tr>';
+}
+async function editArticle(id) {
+  const a = await api('/api/admin/articles/'+id);
+  document.getElementById('af-id').value = id;
+  document.getElementById('af-title').value = a.title;
+  document.getElementById('af-cat').value = a.category;
+  document.getElementById('af-excerpt').value = a.excerpt||'';
+  document.getElementById('af-content').value = a.content||'';
+  document.getElementById('af-tags').value = (Array.isArray(a.tags)?a.tags:JSON.parse(a.tags||'[]')).join(', ');
+  document.getElementById('af-status').value = a.status;
+  document.getElementById('art-form-title').textContent='EDIT ARTICLE';
+  document.getElementById('af-cancel').style.display='';
+  window.scrollTo(0,0);
+}
+async function saveArticle() {
+  const id = document.getElementById('af-id').value;
+  const body = { title: document.getElementById('af-title').value.trim(), category: document.getElementById('af-cat').value, excerpt: document.getElementById('af-excerpt').value, content: document.getElementById('af-content').value, tags: document.getElementById('af-tags').value.split(',').map(t=>t.trim()).filter(Boolean), status: document.getElementById('af-status').value };
+  if (!body.title) { toast('Title required','error'); return; }
+  const r = await api(id?`/api/admin/articles/${id}`:'/api/admin/articles', id?'PUT':'POST', body);
+  if(r.success){toast('Article saved ✓');cancelEditArticle();loadArticles();}else toast(r.error||'Error','error');
+}
+function cancelEditArticle(){document.getElementById('af-id').value='';['af-title','af-cat','af-excerpt','af-content','af-tags'].forEach(i=>document.getElementById(i).value='');document.getElementById('af-form-title')&&(document.getElementById('art-form-title').textContent='ADD ARTICLE');document.getElementById('af-cancel').style.display='none';}
+async function deleteArticle(id){if(!confirm('Delete?'))return;const r=await api('/api/admin/articles/'+id,'DELETE');if(r.success){toast('Deleted');loadArticles();}else toast(r.error,'error');}
+
+// ===== COMMENTS =====
+async function loadComments() {
+  const comms = await api('/api/admin/comments');
+  document.getElementById('comm-tbody').innerHTML = comms.map(c => `
+    <tr><td class="td-title">${c.author_name}</td><td style="font-size:12px;color:var(--text3)">${c.article_title||'?'}</td>
+    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${c.content.substring(0,60)}...</td>
+    <td><span class="s-badge ${c.status==='approved'?'s-active':'s-pending'}">${c.status}</span></td>
+    <td>${new Date(c.created_at).toLocaleDateString()}</td>
+    <td class="td-actions">
+      ${c.status!=='approved'?`<button class="btn-approve" onclick="approveComment(${c.id})">✓</button>`:''}
+      <button class="btn-danger" onclick="deleteComment(${c.id})">Delete</button></td></tr>`).join('')
+    || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text3)">No comments</td></tr>';
+}
+async function approveComment(id){const r=await api('/api/admin/comments/'+id,'PUT',{status:'approved'});if(r.success){toast('Approved');loadComments();}else toast(r.error,'error');}
+async function deleteComment(id){if(!confirm('Delete?'))return;const r=await api('/api/admin/comments/'+id,'DELETE');if(r.success){toast('Deleted');loadComments();}else toast(r.error,'error');}
+
+// ===== SKILLS =====
+async function loadSkills(){
+  const skills=await api('/api/admin/skills');
+  document.getElementById('sk-tbody').innerHTML=skills.map(s=>`
+    <tr><td class="td-title">${s.name}</td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden"><div style="width:${s.level}%;height:100%;background:linear-gradient(90deg,var(--c2),var(--c1))"></div></div><span style="font-size:11px;font-family:monospace;color:var(--text3)">${s.level}%</span></div></td>
+    <td>${s.category}</td>
+    <td class="td-actions"><button class="btn-danger" onclick="deleteSkill(${s.id})">Delete</button></td></tr>`).join('')
+    ||'<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text3)">No skills</td></tr>';
+}
+async function addSkill(){const n=document.getElementById('sf-name').value.trim();const l=parseInt(document.getElementById('sf-level').value)||80;const c=document.getElementById('sf-cat').value;if(!n){toast('Name required','error');return;}const r=await api('/api/admin/skills','POST',{name:n,level:l,category:c});if(r.success){toast('Skill added ✓');document.getElementById('sf-name').value='';loadSkills();}else toast(r.error,'error');}
+async function deleteSkill(id){const r=await api('/api/admin/skills/'+id,'DELETE');if(r.success){toast('Deleted');loadSkills();}else toast(r.error,'error');}
+
+// ===== TIMELINE =====
+async function loadTimeline(){
+  const tl=await api('/api/admin/timeline');
+  document.getElementById('tl-tbody').innerHTML=tl.map(t=>`
+    <tr><td class="td-title">${t.year}</td><td>${t.title}</td><td style="color:var(--text2);font-size:12px">${(t.description||'').substring(0,80)}</td>
+    <td class="td-actions"><button class="btn-danger" onclick="deleteTimeline(${t.id})">Delete</button></td></tr>`).join('')
+    ||'<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text3)">No entries</td></tr>';
+}
+async function addTimeline(){const y=document.getElementById('tf-year').value.trim();const t=document.getElementById('tf-title').value.trim();const d=document.getElementById('tf-desc').value;if(!y||!t){toast('Year and title required','error');return;}const r=await api('/api/admin/timeline','POST',{year:y,title:t,description:d});if(r.success){toast('Entry added ✓');['tf-year','tf-title','tf-desc'].forEach(i=>document.getElementById(i).value='');loadTimeline();}else toast(r.error,'error');}
+async function deleteTimeline(id){const r=await api('/api/admin/timeline/'+id,'DELETE');if(r.success){toast('Deleted');loadTimeline();}else toast(r.error,'error');}
+
+// ===== MESSAGES =====
+async function loadMessages(){
+  const msgs=await api('/api/admin/messages');
+  document.getElementById('msg-tbody').innerHTML=msgs.map(m=>`
+    <tr><td>${m.is_read?'':' <span class="unread"></span>'}</td>
+    <td class="td-title">${m.name}<br><span style="font-size:11px;color:var(--text3)">${m.email||''}</span></td>
+    <td>${m.subject||'-'}</td>
+    <td style="max-width:220px;font-size:12px;color:var(--text2)">${m.message.substring(0,80)}...</td>
+    <td>${new Date(m.created_at).toLocaleDateString()}</td>
+    <td class="td-actions">
+      ${!m.is_read?`<button class="btn-edit" onclick="markRead(${m.id})">Mark Read</button>`:''}
+      <button class="btn-danger" onclick="deleteMessage(${m.id})">Delete</button></td></tr>`).join('')
+    ||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text3)">No messages</td></tr>';
+}
+async function markRead(id){await api('/api/admin/messages/'+id+'/read','PUT');loadMessages();}
+async function deleteMessage(id){if(!confirm('Delete?'))return;const r=await api('/api/admin/messages/'+id,'DELETE');if(r.success){toast('Deleted');loadMessages();}else toast(r.error,'error');}
+
+// ===== MEDIA =====
+async function loadMedia(){
+  const media=await api('/api/admin/media');
+  document.getElementById('media-grid').innerHTML=media.map(m=>{
+    const isImg=/\.(jpg|jpeg|png|gif|webp)$/i.test(m.filename);
+    return `<div class="media-item">
+      ${isImg?`<img src="${m.path}" style="width:100%;height:100px;object-fit:cover">`:`<div class="media-thumb">📄</div>`}
+      <div class="media-info">
+        <div class="media-name">${m.original_name||m.filename}</div>
+        <div class="media-size">${Math.round((m.size||0)/1024)}KB</div>
+        <div style="display:flex;gap:4px;margin-top:6px">
+          <button class="btn-edit" style="font-size:10px;padding:3px 8px" onclick="copyPath('${m.path}')">Copy</button>
+          <button class="btn-danger" style="font-size:10px;padding:3px 8px" onclick="deleteMedia(${m.id})">Del</button>
+        </div>
+      </div></div>`;}).join('')||'<div style="color:var(--text3);font-size:13px;grid-column:span 4">No media uploaded yet</div>';
+}
+async function uploadFiles(files){
+  for(const file of files){
+    const fd=new FormData();fd.append('file',file);
+    const r=await fetch('/api/admin/media/upload',{method:'POST',headers:{'Authorization':'Bearer '+token},credentials:'include',body:fd});
+    const data=await r.json();
+    if(data.success)toast('Uploaded: '+file.name);else toast('Failed: '+file.name,'error');
+  }
+  loadMedia();
+}
+function copyPath(path){navigator.clipboard.writeText(window.location.origin+path);toast('Path copied ✓');}
+async function deleteMedia(id){if(!confirm('Delete file?'))return;const r=await api('/api/admin/media/'+id,'DELETE');if(r.success){toast('Deleted');loadMedia();}else toast(r.error,'error');}
+
+// Drag & drop
+const uz=document.getElementById('upload-zone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag');uploadFiles(e.dataTransfer.files);});
+
+// ===== SETTINGS =====
+async function loadSettings(){
+  const s=await api('/api/admin/settings');
+  const map={site_title:'st-title',site_subtitle:'st-subtitle',site_description:'st-desc',site_keywords:'st-keywords',hero_tagline:'st-tagline',stat1_num:'st-s1n',stat1_label:'st-s1l',stat2_num:'st-s2n',stat2_label:'st-s2l',stat3_num:'st-s3n',stat3_label:'st-s3l',stat4_num:'st-s4n',stat4_label:'st-s4l',about_text:'st-about',email:'st-email',phone:'st-phone',linkedin:'st-linkedin',location:'st-location',cv_url:'st-cv'};
+  for(const[k,id]of Object.entries(map)){const el=document.getElementById(id);if(el)el.value=s[k]||'';}
+  document.getElementById('st-comments').checked=s.comments_enabled==='1';
+}
+async function saveSettings(){
+  const map={site_title:'st-title',site_subtitle:'st-subtitle',site_description:'st-desc',site_keywords:'st-keywords',hero_tagline:'st-tagline',stat1_num:'st-s1n',stat1_label:'st-s1l',stat2_num:'st-s2n',stat2_label:'st-s2l',stat3_num:'st-s3n',stat3_label:'st-s3l',stat4_num:'st-s4n',stat4_label:'st-s4l',about_text:'st-about',email:'st-email',phone:'st-phone',linkedin:'st-linkedin',location:'st-location',cv_url:'st-cv'};
+  const body={};
+  for(const[k,id]of Object.entries(map)){const el=document.getElementById(id);if(el)body[k]=el.value;}
+  body.comments_enabled=document.getElementById('st-comments').checked?'1':'0';
+  const r=await api('/api/admin/settings','PUT',body);
+  if(r.success)toast('Settings saved ✓');else toast(r.error||'Error','error');
+}
+
+// ===== PASSWORD =====
+async function changePassword(){
+  const curr=document.getElementById('pw-curr').value;
+  const nw=document.getElementById('pw-new').value;
+  const conf=document.getElementById('pw-conf').value;
+  if(nw!==conf){toast('Passwords do not match','error');return;}
+  const r=await api('/api/admin/change-password','PUT',{current_password:curr,new_password:nw});
+  if(r.success){toast('Password changed ✓');['pw-curr','pw-new','pw-conf'].forEach(i=>document.getElementById(i).value='');}
+  else toast(r.error||'Error','error');
+}
+
+// ===== INIT =====
+verifyToken();
+</script>
+</body>
+</html>
